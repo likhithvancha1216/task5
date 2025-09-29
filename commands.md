@@ -2,7 +2,6 @@
 
 **Author:** Likhith Bharadwaj Reddy  
 **Date:** 29-09-2025  
-
 ---
 
 ## Capture Setup  
