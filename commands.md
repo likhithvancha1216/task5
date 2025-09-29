@@ -1,76 +1,32 @@
-# Task 5 — Wireshark Filters & Analysis Commands
+# Wireshark Filters & Analysis Commands — Task 5
 
-**Author:** Likhith Bharadwaj Reddy  
-**Date:** 29-09-2025  
----
+## Display Filters Used
+- `dns` → Show DNS queries and responses  
+- `tcp` → Show TCP packets  
+- `tcp.port == 443` → Focus on HTTPS/TLS traffic  
+- `tls` → Show TLS handshake and encrypted messages  
+- `icmp` → Display ping requests and replies  
+- `arp` → Show ARP traffic  
 
-## Capture Setup  
+## Useful Wireshark Features
+- **Follow TCP Stream** → Inspect TCP session data (though TLS will be encrypted).  
+- **Statistics → Protocol Hierarchy** → View distribution of DNS, TCP, TLS, ICMP, ARP.  
+- **Statistics → Conversations** → Identify active conversations (local ↔ gateway, local ↔ remote).  
+- **Statistics → Endpoints** → See total traffic per endpoint.  
 
-- **Interface Used:** Wi-Fi (Intel(R) Dual Band Wireless-AC 8265)  
-- **Duration:** ~60 seconds  
-- **Saved File:** `capture/task5_capture_2025-09-29.pcapng`  
-
----
-
-## Display Filters Used  
-
-| Filter | Purpose / Analysis |
-|--------|--------------------|
-| `dns` | Isolate DNS queries/responses (verify resolution of remote server). |
-| `tcp.port==443` | Show only HTTPS/TLS traffic (TCP handshake + TLS handshake). |
-| `icmp` | Display ICMP Echo Request/Reply packets (connectivity check). |
-| `arp` | Show ARP requests/replies (local-to-gateway MAC resolution). |
-| `ip.addr==93.184.216.34` | Focus on traffic with the remote server. |
-| `ip.addr==192.168.1.10` | Focus on local host traffic. |
-| `ip.addr==192.168.1.1` | Focus on gateway/DNS server traffic. |
-
----
-
-## Analysis Steps in Wireshark  
-
-1. **DNS Resolution**  
-   - Filter: `dns`  
-   - Observed DNS query for remote server, response with IP `93.184.216.34`.  
-
-2. **TCP 3-Way Handshake**  
-   - Filter: `tcp.port==443`  
-   - Verified SYN → SYN-ACK → ACK sequence between local host and remote server.  
-
-3. **TLS Handshake**  
-   - Filter: `tcp.port==443`  
-   - Checked `ClientHello` (SNI, supported ciphers, TLS version) and `ServerHello` + Certificate.  
-
-4. **ICMP Connectivity**  
-   - Filter: `icmp`  
-   - Verified Echo Request (local → remote) and Echo Reply (remote → local).  
-
-5. **ARP Requests**  
-   - Filter: `arp`  
-   - Confirmed mapping of gateway IP `192.168.1.1` to MAC address.  
-
----
-
-## Useful Wireshark Menu Options  
-
-- **Statistics → Protocol Hierarchy** → Breakdown of protocols (DNS, TCP, TLS, ICMP, ARP).  
-- **Statistics → Conversations** → List of IPs and traffic volume between local host, gateway, and remote server.  
-- **Statistics → I/O Graphs** → Visualize traffic spikes (e.g., handshake initiation).  
-
----
-
-## Optional Command-Line (tshark) Examples  
-
-For automated analysis (if required):  
-
+## Command-Line (tshark)
 ```bash
-# List all DNS queries
-tshark -r capture/task5_capture_2025-09-29.pcapng -Y "dns" -T fields -e dns.qry.name
+# Extract DNS traffic
+tshark -r Wireshark\ Packet\ Capture\ Analysis.pcapng -Y "dns"
 
-# Show all TCP handshakes on port 443
-tshark -r capture/task5_capture_2025-09-29.pcapng -Y "tcp.port==443" -T fields -e ip.src -e ip.dst -e tcp.flags
+# Extract TCP traffic
+tshark -r Wireshark\ Packet\ Capture\ Analysis.pcapng -Y "tcp"
 
-# Extract only ICMP packets
-tshark -r capture/task5_capture_2025-09-29.pcapng -Y "icmp"
+# Extract TLS handshakes
+tshark -r Wireshark\ Packet\ Capture\ Analysis.pcapng -Y "tls"
 
-# Show ARP communications
-tshark -r capture/task5_capture_2025-09-29.pcapng -Y "arp"
+# Extract ICMP traffic
+tshark -r Wireshark\ Packet\ Capture\ Analysis.pcapng -Y "icmp"
+
+# Extract ARP traffic
+tshark -r Wireshark\ Packet\ Capture\ Analysis.pcapng -Y "arp"
